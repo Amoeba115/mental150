@@ -4,12 +4,12 @@ import streamlit as st
 # 1. PAGE CONFIGURATION & STYLING
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="BYU Connection Compass",
-    page_icon="🧭",
+    page_title="The Social Bridge",
+    page_icon="🌉",
     layout="centered"
 )
 
-# Custom CSS to make the app look less "data sciency" and more like a mental health resource
+# Custom CSS
 st.markdown("""
 <style>
     /* General Font and Background */
@@ -40,6 +40,12 @@ st.markdown("""
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    /* Text Input Styling for 'Other' */
+    .stTextInput > div > div > input {
+        border-radius: 5px;
+        border: 1px solid #ccc;
     }
     
     /* Button Styling */
@@ -81,13 +87,11 @@ st.markdown("""
 # -----------------------------------------------------------------------------
 # 2. STATE MANAGEMENT
 # -----------------------------------------------------------------------------
-# Initialize session state variables to track progress and answers
 if 'step' not in st.session_state:
     st.session_state.step = 0
 if 'answers' not in st.session_state:
     st.session_state.answers = {}
 
-# Helper function to move to next step
 def next_step():
     st.session_state.step += 1
 
@@ -98,8 +102,8 @@ def restart():
 # -----------------------------------------------------------------------------
 # 3. QUESTIONNAIRE DATA
 # -----------------------------------------------------------------------------
-# Defined strictly based on the design we created
 questions = {
+    # Q1 kept strict for safety triage - NO 'Other' option here
     "q1": {
         "text": "Right now, in this exact moment, how safe do you feel?",
         "options": [
@@ -116,9 +120,10 @@ questions = {
             "I am physically alone most of the time; I don't really have a circle of friends here yet.",
             "I have friends, but I’ve recently lost a specific person (breakup, falling out, passing away).",
             "I have opportunities to socialize, but I get too nervous or anxious to go.",
-            "I have friends, but I feel like I have to hide who I really am to fit in."
+            "I have friends, but I feel like I have to hide who I really am to fit in.",
+            "Other (please explain)"
         ],
-        "keys": ["A", "B", "C", "D", "E"]
+        "keys": ["A", "B", "C", "D", "E", "OTHER"]
     },
     "q3": {
         "text": "When you think about trying to make new friends, what is your immediate gut reaction?",
@@ -127,9 +132,10 @@ questions = {
             "I don't even know where to start looking.",
             "I want to, but I'm terrified I'll say the wrong thing or be judged.",
             "I just don't have the energy or time; school/work is drowning me.",
-            "I miss the person/group I used to have; no one else compares."
+            "I miss the person/group I used to have; no one else compares.",
+            "Other (please explain)"
         ],
-        "keys": ["A", "B", "C", "D", "E"]
+        "keys": ["A", "B", "C", "D", "E", "OTHER"]
     },
     "q4": {
         "text": "How long have you felt this way?",
@@ -137,9 +143,10 @@ questions = {
             "It’s been a constant feeling for years, even before college.",
             "It started when I came to BYU/college.",
             "It’s very recent (last few weeks/months) due to a specific event.",
-            "It comes and goes in waves."
+            "It comes and goes in waves.",
+            "Other (please explain)"
         ],
-        "keys": ["A", "B", "C", "D"]
+        "keys": ["A", "B", "C", "D", "OTHER"]
     },
     "q5": {
         "text": "How is this loneliness affecting your daily life?",
@@ -147,9 +154,10 @@ questions = {
             "I’m functioning okay, just feeling sad or empty when I’m alone.",
             "It’s hard to get out of bed; I feel heavy, hopeless, or numb.",
             "My heart races, I feel shaky, or I panic when I have to talk to people.",
-            "I’m exhausted, not sleeping well, and physically drained."
+            "I’m exhausted, not sleeping well, and physically drained.",
+            "Other (please explain)"
         ],
-        "keys": ["A", "B", "C", "D"]
+        "keys": ["A", "B", "C", "D", "OTHER"]
     },
     "q6": {
         "text": "When you are alone, what do you usually do?",
@@ -157,9 +165,10 @@ questions = {
             "Scroll social media and see everyone else having fun.",
             "Sleep or stare at the ceiling.",
             "Focus intensely on schoolwork to distract myself.",
-            "Ruminate (think over and over) about what is 'wrong' with me."
+            "Ruminate (think over and over) about what is 'wrong' with me.",
+            "Other (please explain)"
         ],
-        "keys": ["A", "B", "C", "D"]
+        "keys": ["A", "B", "C", "D", "OTHER"]
     },
     "q7": {
         "text": "If you could wave a magic wand and fix one thing right now, what would it be?",
@@ -167,9 +176,10 @@ questions = {
             "To have just one person who really 'gets' me.",
             "To have a big group of friends to hang out with on weekends.",
             "To stop feeling so afraid of social interaction.",
-            "To stop feeling this deep sadness/numbness."
+            "To stop feeling this deep sadness/numbness.",
+            "Other (please explain)"
         ],
-        "keys": ["A", "B", "C", "D"]
+        "keys": ["A", "B", "C", "D", "OTHER"]
     }
 }
 
@@ -178,56 +188,64 @@ questions = {
 # -----------------------------------------------------------------------------
 def determine_archetype(answers):
     """
-    Analyzes the answers dictionary and returns the specific Group ID, Title, and Message.
-    Hierarchy: Safety > Clinical > Situational > Anxiety > Identity > Burnout > Isolation > Emotional > Comparison
+    Analyzes answers. If 'OTHER' is used too frequently, or if no specific pattern is matched,
+    it defaults to Group 10 (General).
     """
     
-    # 1. CRISIS CASE (Safety First)
+    # 1. CRISIS CASE (Safety First) - Explicit check, cannot be 'Other'
     if answers.get('q1') == 'C':
         return 1
+    
+    # Check for too many "Other" answers (e.g., 3 or more)
+    other_count = list(answers.values()).count('OTHER')
+    if other_count >= 3:
+        return 10
         
     # 2. CHRONIC / CLINICAL STRUGGLE
-    # Long term duration OR Severe depressive symptoms
     if answers.get('q4') == 'A' or answers.get('q5') == 'B':
         return 8
         
     # 3. SITUATIONAL / RECENTLY HEARTBROKEN
-    # Loss of specific person OR Recent acute onset OR Missing specific group
     if answers.get('q2') == 'C' or answers.get('q4') == 'C' or answers.get('q3') == 'E':
         return 5
 
     # 4. SOCIALLY ANXIOUS
-    # Nervous to go OR Terrified of judgment OR Panic symptoms
     if answers.get('q2') == 'D' or answers.get('q3') == 'C' or answers.get('q5') == 'C':
         return 4
         
     # 5. IDENTITY ISOLATED
-    # Hiding who they are
     if answers.get('q2') == 'E':
         return 6
         
     # 6. BURNOUT
-    # No energy/time
     if answers.get('q3') == 'D':
         return 7
         
     # 7. FRESHMAN / ISOLATION
-    # Physically alone OR Started when came to college
     if answers.get('q2') == 'B' or answers.get('q4') == 'B':
         return 3
         
-    # 8. EMOTIONAL LONELINESS (Lonely in a crowd)
-    # People around but not connected OR Wants one person who 'gets' them
+    # 8. EMOTIONAL LONELINESS
     if answers.get('q2') == 'A' or answers.get('q7') == 'A':
         return 2
 
     # 9. COMPARISON TRAP
-    # Scrolling social media
     if answers.get('q6') == 'A':
         return 9
         
     # 10. GENERAL / CATCH-ALL
     return 10
+
+# Helper to render question with conditional "Other" text box
+def render_question(key_id):
+    q = questions[key_id]
+    response = st.radio(q['text'], q['options'], index=None, key=f"rad_{key_id}")
+    
+    # If they selected the last option (which we know is "Other" for Q2-Q7)
+    if response and "Other" in response:
+        st.text_input("Please explain (optional):", key=f"text_{key_id}", placeholder="Type your answer here...")
+        
+    return response
 
 # -----------------------------------------------------------------------------
 # 5. UI RENDERING
@@ -235,7 +253,7 @@ def determine_archetype(answers):
 
 # --- STEP 0: WELCOME SCREEN ---
 if st.session_state.step == 0:
-    st.title("Connection Compass")
+    st.title("The Social Bridge")
     st.markdown("""
     College can be crowded, but it can also feel incredibly quiet. 
     
@@ -255,12 +273,9 @@ elif st.session_state.step == 1:
     
     if st.button("Next"):
         if response:
-            # Map the text answer back to the Key (A, B, C)
             st.session_state.answers['q1'] = q['keys'][q['options'].index(response)]
-            
-            # Immediate Crisis Redirect
             if st.session_state.answers['q1'] == 'C':
-                st.session_state.step = 99 # Jump to crisis page
+                st.session_state.step = 99
             else:
                 next_step()
             st.rerun()
@@ -272,23 +287,16 @@ elif st.session_state.step == 2:
     st.progress(33)
     st.subheader("Understanding Your Situation")
     
-    # Question 2
-    q2 = questions['q2']
-    a2 = st.radio(q2['text'], q2['options'], index=None, key="rad_q2")
-    
-    # Question 3
-    q3 = questions['q3']
-    a3 = st.radio(q3['text'], q3['options'], index=None, key="rad_q3")
-    
-    # Question 4
-    q4 = questions['q4']
-    a4 = st.radio(q4['text'], q4['options'], index=None, key="rad_q4")
+    a2 = render_question('q2')
+    a3 = render_question('q3')
+    a4 = render_question('q4')
 
     if st.button("Next"):
         if a2 and a3 and a4:
-            st.session_state.answers['q2'] = q2['keys'][q2['options'].index(a2)]
-            st.session_state.answers['q3'] = q3['keys'][q3['options'].index(a3)]
-            st.session_state.answers['q4'] = q4['keys'][q4['options'].index(a4)]
+            # Map answers. If "Other" is in the string, map to 'OTHER' key
+            st.session_state.answers['q2'] = 'OTHER' if "Other" in a2 else questions['q2']['keys'][questions['q2']['options'].index(a2)]
+            st.session_state.answers['q3'] = 'OTHER' if "Other" in a3 else questions['q3']['keys'][questions['q3']['options'].index(a3)]
+            st.session_state.answers['q4'] = 'OTHER' if "Other" in a4 else questions['q4']['keys'][questions['q4']['options'].index(a4)]
             next_step()
             st.rerun()
         else:
@@ -299,23 +307,15 @@ elif st.session_state.step == 3:
     st.progress(66)
     st.subheader("How It Affects You")
     
-    # Question 5
-    q5 = questions['q5']
-    a5 = st.radio(q5['text'], q5['options'], index=None, key="rad_q5")
-    
-    # Question 6
-    q6 = questions['q6']
-    a6 = st.radio(q6['text'], q6['options'], index=None, key="rad_q6")
-    
-    # Question 7
-    q7 = questions['q7']
-    a7 = st.radio(q7['text'], q7['options'], index=None, key="rad_q7")
+    a5 = render_question('q5')
+    a6 = render_question('q6')
+    a7 = render_question('q7')
 
     if st.button("See My Results"):
         if a5 and a6 and a7:
-            st.session_state.answers['q5'] = q5['keys'][q5['options'].index(a5)]
-            st.session_state.answers['q6'] = q6['keys'][q6['options'].index(a6)]
-            st.session_state.answers['q7'] = q7['keys'][q7['options'].index(a7)]
+            st.session_state.answers['q5'] = 'OTHER' if "Other" in a5 else questions['q5']['keys'][questions['q5']['options'].index(a5)]
+            st.session_state.answers['q6'] = 'OTHER' if "Other" in a6 else questions['q6']['keys'][questions['q6']['options'].index(a6)]
+            st.session_state.answers['q7'] = 'OTHER' if "Other" in a7 else questions['q7']['keys'][questions['q7']['options'].index(a7)]
             next_step()
             st.rerun()
         else:
@@ -344,16 +344,10 @@ elif st.session_state.step == 99:
 elif st.session_state.step == 4:
     st.progress(100)
     
-    # Determine the archetype
     group_id = determine_archetype(st.session_state.answers)
     
-    # Content Dictionary for Results
     results_content = {
-        1: { # Covered by Step 99, but here for fallback
-            "title": "Crisis Support",
-            "msg": "Please reach out for immediate help.",
-            "resources": [] 
-        },
+        1: { "title": "Crisis Support", "msg": "Please reach out for immediate help.", "resources": [] },
         2: {
             "title": "Emotional Loneliness (Lonely in a Crowd)",
             "msg": "You are surrounded by people, yet you feel invisible. This is 'Emotional Loneliness.' It’s painful to be seen but not known. Your loneliness isn't about needing *more* people, but needing *deeper* connection.",
@@ -428,7 +422,7 @@ elif st.session_state.step == 4:
         },
         10: {
             "title": "General Loneliness",
-            "msg": "Loneliness is complex and unique to everyone. While we couldn't pin down your exact 'type,' these resources are the best place to start.",
+            "msg": "Your answers indicate a unique situation or perhaps a mix of factors. Loneliness is complex, but these resources are the best place to start building your bridge back to connection.",
             "resources": [
                 {"name": "End Social Isolation (Main Library)", "url": "https://www.endsocialisolation.org/support/"},
                 {"name": "CDC Loneliness Page", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html"},
