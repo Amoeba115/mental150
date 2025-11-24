@@ -1,35 +1,76 @@
-The Whispering Woods 🌲
+BYU Connection Compass 🧭
 
-A retro-styled text adventure game built with Python and Streamlit.
+An interactive digital experience designed to help students identify the root causes of their loneliness and connect with targeted resources.
 
-How to Play
+Project Overview
 
-Navigate through the Whispering Woods by choosing your path. Be careful—choices matter!
+"Connection Compass" is a Python-based web application built with Streamlit. It addresses the "loneliness epidemic" on college campuses, specifically tailored to the unique social environment at Brigham Young University (BYU).
+
+Instead of a one-size-fits-all approach, this tool functions as a diagnostic wizard. It uses a branching questionnaire to sort users into 9 specific archetypes (e.g., "Socially Anxious," "Situational Grief," "Emotional Loneliness") and provides immediate, curated resources for their specific situation.
+
+Research Basis
+
+The logic and questionnaire design are grounded in recent research regarding social isolation and student mental health, including:
+
+Holt-Lunstad, J. (BYU) - Research on social connection as a medical health factor.
+
+Research Square - Studies on the "Loneliness Epidemic" post-COVID-19.
+
+US Surgeon General - 2023 Advisory on the Healing Effects of Social Connection.
+
+EduMed & CDC - Frameworks for identifying symptoms of isolation.
+
+Features
+
+Triaging Logic: Immediate detection of safety/crisis responses to redirect users to emergency services.
+
+Branching Questionnaire: A "Hierarchy of Needs" algorithm that prioritizes clinical or safety issues over general social advice.
+
+10 Unique Outcomes: Users are matched to specific profiles rather than generic advice.
+
+Anonymous: No data is stored or tracked; the session resets completely upon reload.
 
 How to Run Locally
 
+If you want to run this code on your own machine:
+
 Clone the repository
 
-Install dependencies:
+git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
+cd your-repo-name
+
+
+Install Requirements
+Ensure you have Python installed, then run:
 
 pip install -r requirements.txt
 
 
-Run the app:
+Launch the App
 
-streamlit run adventure_game.py
+streamlit run app.py
 
 
-Deployment
+The application will open automatically in your default web browser (usually at http://localhost:8501).
 
-This app is ready to be deployed on Streamlit Community Cloud:
+Deployment (Streamlit Cloud)
 
-Push this code to your GitHub repository.
+This app is optimized for Streamlit Cloud, which allows for free hosting directly from GitHub.
 
-Log in to Streamlit Cloud.
+Push this code to a GitHub repository.
 
-Click "New app" and select this repository.
+Go to share.streamlit.io.
 
-Set the Main file path to adventure_game.py.
+Connect your GitHub account.
 
-Click Deploy!
+Select your repository and the main file (app.py).
+
+Click Deploy.
+
+Files in this Repository
+
+app.py: The main application logic, CSS styling, and questionnaire data.
+
+requirements.txt: List of Python dependencies required to build the app.
+
+README.md: Project documentation.
