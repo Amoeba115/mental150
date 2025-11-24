@@ -381,7 +381,12 @@ elif st.session_state.step == 99:
         <p><strong>Please consider using one of these resources:</strong></p>
         <ul>
             <li><strong>Crisis Text Line:</strong> Text <strong>HOME</strong> to <strong>741741</strong> (Free, 24/7)</li>
-            <li><strong>BYU CAPS (Counseling & Psychological Services):</strong> Call <strong>801.422.3035</strong>. Free crisis support for students.</li>
+            <li>
+                <strong>BYU CAPS (Counseling & Psychological Services):</strong> 
+                <br>Call <strong>801.422.3035</strong>.
+                <br><a href="https://caps.byu.edu/" target="_blank" style="color:#58a6ff;">Visit Website</a>
+                <br><strong>Walk-in Hours:</strong> 8:00 AM - 5:00 PM, Mon-Fri (1500 WSC)
+            </li>
             <li><strong>University Police:</strong> Call <strong>801.422.2222</strong> (If you are in immediate danger)</li>
         </ul>
         <p>You do not have to do this alone.</p>
