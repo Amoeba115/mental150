@@ -9,13 +9,13 @@ st.set_page_config(
     layout="centered"
 )
 
-# Custom CSS - DARK MODE AESTHETIC
+# Custom CSS - DEEP NAVY / DARK MODE AESTHETIC
 st.markdown("""
 <style>
     /* General Font and Background */
     .stApp {
-        background-color: #121212; /* Very Dark Grey */
-        color: #e0e0e0;
+        background-color: #0b101d; /* Deep Midnight Navy */
+        color: #c9d1d9; /* Soft grey-white for readability */
         font-family: 'Helvetica', sans-serif;
     }
     
@@ -27,12 +27,12 @@ st.markdown("""
         padding-bottom: 20px;
     }
     h2, h3 {
-        color: #a8d0e6; /* Light Blue for subheaders */
+        color: #58a6ff; /* Soft Blue for headers (Github dark mode style) */
     }
     
     /* Text Styling */
     p, li, .stMarkdown {
-        color: #e0e0e0;
+        color: #c9d1d9;
         font-size: 1.05rem;
     }
     
@@ -45,65 +45,65 @@ st.markdown("""
         display: block;
     }
     div.row-widget.stRadio > div {
-        background-color: #1e1e1e; /* Darker Card Background */
+        background-color: #161b22; /* Dark Navy-Grey */
         padding: 20px;
         border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.5);
-        border: 1px solid #333;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.6);
+        border: 1px solid #30363d;
     }
     
     /* Radio Button Text Color */
     .stRadio div[role='radiogroup'] > label {
-        color: #e0e0e0 !important;
+        color: #c9d1d9 !important;
     }
     
     /* Text Input Styling for 'Other' */
     .stTextInput > div > div > input {
         border-radius: 5px;
-        background-color: #2c2c2c;
+        background-color: #0d1117;
         color: white;
-        border: 1px solid #444;
+        border: 1px solid #30363d;
     }
     
     /* Button Styling */
     .stButton > button {
-        background-color: #0062B8; /* BYU Royal Blue */
+        background-color: #002E5D; /* Darker BYU Navy */
         color: white;
         border-radius: 50px;
         padding: 10px 24px;
         font-weight: bold;
-        border: none;
+        border: 1px solid #1f6feb;
         width: 100%;
         transition: background-color 0.3s;
     }
     .stButton > button:hover {
-        background-color: #004B8D; /* Darker Blue on Hover */
+        background-color: #001f3f; /* Even darker on hover */
+        border-color: #58a6ff;
         color: white;
-        border: 1px solid #a8d0e6;
     }
     
     /* Progress Bar */
     .stProgress > div > div > div > div {
-        background-color: #0062B8;
+        background-color: #002E5D; /* BYU Navy */
     }
 
     /* Resource Box Styling */
     .resource-box {
-        background-color: #1a2634; /* Dark Blue-Grey */
+        background-color: #161b22;
         padding: 15px;
         border-radius: 8px;
-        border-left: 5px solid #0062B8;
+        border-left: 5px solid #002E5D; /* BYU Navy Border */
         margin-bottom: 15px;
-        border: 1px solid #333;
+        border: 1px solid #30363d;
     }
     .resource-title {
         font-weight: bold;
-        color: #a8d0e6; /* Light Blue */
+        color: #58a6ff;
         font-size: 1.1rem;
         margin-bottom: 5px;
     }
     .resource-link {
-        color: #4DA8DA; /* Cyan-Blue for links */
+        color: #58a6ff;
         text-decoration: none;
         font-weight: bold;
         display: inline-block;
@@ -114,11 +114,13 @@ st.markdown("""
         text-decoration: underline;
     }
     
-    /* Info Box Styling (for Results Message) */
-    .stAlert {
-        background-color: #1a2634;
+    /* Crisis/Info Box Styling */
+    .info-box {
+        background-color: #161b22;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #30363d;
         color: #e0e0e0;
-        border: 1px solid #0062B8;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -362,19 +364,25 @@ elif st.session_state.step == 3:
 
 # --- STEP 99: IMMEDIATE CRISIS SCREEN ---
 elif st.session_state.step == 99:
-    st.error("⚠️ IMMEDIATE SUPPORT NEEDED")
+    # REPLACED ST.ERROR WITH A CALMER LAYOUT
     st.markdown("""
-    ### You are not alone, and there is help available right now.
-    Based on your answer, we want to make sure you speak to a human immediately.
+    <div class="info-box">
+        <h2 style="color: #58a6ff; margin-top:0;">Support Resources</h2>
+        <p style="font-size: 1.1rem;">
+            It sounds like you are carrying a really heavy burden right now. 
+            We want to make sure you have someone to talk to who can help you navigate this safely.
+        </p>
+        <p><strong>Please consider using one of these resources:</strong></p>
+        <ul>
+            <li><strong>Crisis Text Line:</strong> Text <strong>HOME</strong> to <strong>741741</strong> (Free, 24/7)</li>
+            <li><strong>BYU CAPS Crisis Service:</strong> Call <strong>801.422.3035</strong> (During business hours)</li>
+            <li><strong>University Police:</strong> Call <strong>801.422.2222</strong> (If you are in immediate danger)</li>
+        </ul>
+        <p>You do not have to do this alone.</p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    **Please use one of these resources right now:**
-    
-    * **Crisis Text Line:** Text **HOME** to **741741** (Free, 24/7)
-    * **BYU CAPS Crisis Service:** Call **801.422.3035** (During business hours)
-    * **University Police:** Call **801.422.2222** (If you are in immediate danger)
-    
-    You do not have to carry this heavy burden by yourself.
-    """)
+    st.write("") # Spacer
     if st.button("Restart"):
         restart()
         st.rerun()
