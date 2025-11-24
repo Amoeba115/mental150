@@ -1,12 +1,12 @@
-BYU Connection Compass 🧭
+BYU Mental Health & Connection Help🧠
 
-An interactive digital experience designed to help students identify the root causes of their loneliness and connect with targeted resources.
+An interactive digital assessment designed to help students identify the root causes of their loneliness and connect with targeted resources.
 
 Project Overview
 
-"Connection Compass" is a Python-based web application built with Streamlit. It addresses the "loneliness epidemic" on college campuses, specifically tailored to the unique social environment at Brigham Young University (BYU).
+"BYU Mental Health & Connection Help" is a Python-based web application built with Streamlit. It addresses the "loneliness epidemic" on college campuses, specifically tailored to the unique social environment at Brigham Young University (BYU).
 
-Instead of a one-size-fits-all approach, this tool functions as a diagnostic wizard. It uses a branching questionnaire to sort users into 9 specific archetypes (e.g., "Socially Anxious," "Situational Grief," "Emotional Loneliness") and provides immediate, curated resources for their specific situation.
+Instead of a one-size-fits-all approach, this tool functions as a diagnostic wizard. It uses a branching questionnaire to sort users into 10 specific archetypes (e.g., "Socially Anxious," "Situational Grief," "Emotional Loneliness") and provides immediate, curated resources for their specific situation. It also includes free-response options to ensure users feel heard, even if their situation is unique.
 
 Research Basis
 
@@ -22,9 +22,13 @@ EduMed & CDC - Frameworks for identifying symptoms of isolation.
 
 Features
 
+Dark Mode Aesthetic: Designed with a calming, private "dark mode" interface to reduce screen fatigue and create a safe environment.
+
 Triaging Logic: Immediate detection of safety/crisis responses to redirect users to emergency services.
 
 Branching Questionnaire: A "Hierarchy of Needs" algorithm that prioritizes clinical or safety issues over general social advice.
+
+"Other" Option Support: Users can type in their own feelings if standard options don't fit, ensuring they feel validated rather than boxed in.
 
 10 Unique Outcomes: Users are matched to specific profiles rather than generic advice.
 
