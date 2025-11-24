@@ -4,82 +4,121 @@ import streamlit as st
 # 1. PAGE CONFIGURATION & STYLING
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="The Social Bridge",
-    page_icon="🌉",
+    page_title="BYU Mental Health & Connection Help",
+    page_icon="🧠",
     layout="centered"
 )
 
-# Custom CSS
+# Custom CSS - DARK MODE AESTHETIC
 st.markdown("""
 <style>
     /* General Font and Background */
     .stApp {
-        background-color: #f8f9fa;
+        background-color: #121212; /* Very Dark Grey */
+        color: #e0e0e0;
         font-family: 'Helvetica', sans-serif;
     }
     
     /* Headers */
     h1 {
-        color: #002E5D; /* BYU Navy */
+        color: #ffffff;
         font-weight: 700;
         text-align: center;
         padding-bottom: 20px;
     }
     h2, h3 {
-        color: #002E5D;
+        color: #a8d0e6; /* Light Blue for subheaders */
+    }
+    
+    /* Text Styling */
+    p, li, .stMarkdown {
+        color: #e0e0e0;
+        font-size: 1.05rem;
     }
     
     /* Question Card Styling */
     .stRadio > label {
         font-weight: bold;
         font-size: 1.1rem;
-        color: #333;
+        color: #ffffff;
+        padding-bottom: 10px;
+        display: block;
     }
     div.row-widget.stRadio > div {
-        background-color: white;
+        background-color: #1e1e1e; /* Darker Card Background */
         padding: 20px;
         border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+        border: 1px solid #333;
+    }
+    
+    /* Radio Button Text Color */
+    .stRadio div[role='radiogroup'] > label {
+        color: #e0e0e0 !important;
     }
     
     /* Text Input Styling for 'Other' */
     .stTextInput > div > div > input {
         border-radius: 5px;
-        border: 1px solid #ccc;
+        background-color: #2c2c2c;
+        color: white;
+        border: 1px solid #444;
     }
     
     /* Button Styling */
     .stButton > button {
-        background-color: #0062B8; /* BYU Royal */
+        background-color: #0062B8; /* BYU Royal Blue */
         color: white;
         border-radius: 50px;
         padding: 10px 24px;
         font-weight: bold;
         border: none;
         width: 100%;
+        transition: background-color 0.3s;
     }
     .stButton > button:hover {
-        background-color: #002E5D;
+        background-color: #004B8D; /* Darker Blue on Hover */
         color: white;
+        border: 1px solid #a8d0e6;
+    }
+    
+    /* Progress Bar */
+    .stProgress > div > div > div > div {
+        background-color: #0062B8;
     }
 
     /* Resource Box Styling */
     .resource-box {
-        background-color: #e3f2fd;
+        background-color: #1a2634; /* Dark Blue-Grey */
         padding: 15px;
         border-radius: 8px;
         border-left: 5px solid #0062B8;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #333;
     }
     .resource-title {
         font-weight: bold;
-        color: #002E5D;
+        color: #a8d0e6; /* Light Blue */
         font-size: 1.1rem;
+        margin-bottom: 5px;
     }
     .resource-link {
-        color: #0062B8;
+        color: #4DA8DA; /* Cyan-Blue for links */
         text-decoration: none;
         font-weight: bold;
+        display: inline-block;
+        margin-top: 5px;
+    }
+    .resource-link:hover {
+        color: #ffffff;
+        text-decoration: underline;
+    }
+    
+    /* Info Box Styling (for Results Message) */
+    .stAlert {
+        background-color: #1a2634;
+        color: #e0e0e0;
+        border: 1px solid #0062B8;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -253,15 +292,15 @@ def render_question(key_id):
 
 # --- STEP 0: WELCOME SCREEN ---
 if st.session_state.step == 0:
-    st.title("The Social Bridge")
+    st.title("BYU Mental Health & Connection Help")
     st.markdown("""
     College can be crowded, but it can also feel incredibly quiet. 
     
     You are not alone in feeling this way. In fact, research shows that over half of students currently feel disconnected.
     
-    This short, anonymous check-in will help you identify **why** you might be feeling this way and point you toward the specific resources that match your situation.
+    This short, anonymous assessment will help you identify **why** you might be feeling this way and point you toward the specific resources that match your situation.
     """)
-    if st.button("Start Check-in"):
+    if st.button("Start Assessment"):
         next_step()
         st.rerun()
 
