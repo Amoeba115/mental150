@@ -147,83 +147,92 @@ def restart():
     st.session_state.answers = {}
 
 # -----------------------------------------------------------------------------
-# 3. QUESTIONNAIRE DATA
+# 3. QUESTIONNAIRE DATA (Reworded for Softness)
 # -----------------------------------------------------------------------------
 questions = {
-    # Q1 kept strict for safety triage - NO 'Other' option here
-    "q1": {
-        "text": "Right now, in this exact moment, how safe do you feel?",
+    # Q0: New Initial Question
+    "q0": {
+        "text": "Before we begin, who are you looking for resources for today?",
         "options": [
-            "I’m okay, just struggling with feelings.",
-            "I’m feeling overwhelmed, but I’m safe.",
-            "I feel unsafe or am having thoughts of hurting myself or others."
+            "For myself.",
+            "I want to learn how to support a friend or classmate."
+        ],
+        "keys": ["SELF", "OTHER_PERSON"]
+    },
+    # Q1 kept strict for safety triage but slightly softened text
+    "q1": {
+        "text": "How are you feeling about your safety right now?",
+        "options": [
+            "I’m managing okay, just working through some difficult emotions.",
+            "I feel overwhelmed, but I am safe.",
+            "I don't feel safe, or I'm having thoughts about hurting myself or others."
         ],
         "keys": ["A", "B", "C"]
     },
     "q2": {
-        "text": "Which of these best describes your current social environment?",
+        "text": "Which statement resonates most with your current social experience?",
         "options": [
-            "I have people around me (roommates, classmates), but I don’t feel connected to any of them.",
-            "I am physically alone most of the time; I don't really have a circle of friends here yet.",
-            "I have friends, but I’ve recently lost a specific person (breakup, falling out, passing away).",
-            "I have opportunities to socialize, but I get too nervous or anxious to go.",
-            "I have friends, but I feel like I have to hide who I really am to fit in.",
+            "I’m around people often (roommates, classmates), but I don't feel a deep connection with them.",
+            "I spend a lot of time alone and haven't found my group yet.",
+            "I had a close connection, but that has recently changed (due to a breakup, loss, or drift).",
+            "I want to socialize, but nervousness often holds me back.",
+            "I have friends, but I feel I can't be my full, authentic self around them.",
             "Other (please explain)"
         ],
         "keys": ["A", "B", "C", "D", "E", "OTHER"]
     },
     "q3": {
-        "text": "When you think about trying to make new friends, what is your immediate gut reaction?",
+        "text": "When you think about reaching out to make new friends, what comes to mind?",
         "options": [
-            "It's pointless; nobody understands me anyway.",
-            "I don't even know where to start looking.",
-            "I want to, but I'm terrified I'll say the wrong thing or be judged.",
-            "I just don't have the energy or time; school/work is drowning me.",
-            "I miss the person/group I used to have; no one else compares.",
+            "I worry that I won't be fully understood.",
+            "I’m not quite sure where to begin.",
+            "I want to, but I feel anxious about saying the wrong thing.",
+            "I honestly feel too drained or busy to try right now.",
+            "I find myself missing a specific connection I used to have.",
             "Other (please explain)"
         ],
         "keys": ["A", "B", "C", "D", "E", "OTHER"]
     },
     "q4": {
-        "text": "How long have you felt this way?",
+        "text": "How long have you been navigating these feelings?",
         "options": [
-            "It’s been a constant feeling for years, even before college.",
-            "It started when I came to BYU/college.",
-            "It’s very recent (last few weeks/months) due to a specific event.",
-            "It comes and goes in waves.",
+            "This has been a familiar feeling for a long time.",
+            "It mostly started during this phase of my life (college/BYU).",
+            "It is very recent and linked to a specific event.",
+            "It tends to come and go.",
             "Other (please explain)"
         ],
         "keys": ["A", "B", "C", "D", "OTHER"]
     },
     "q5": {
-        "text": "How is this loneliness affecting your daily life?",
+        "text": "How is this affecting your day-to-day well-being?",
         "options": [
-            "I’m functioning okay, just feeling sad or empty when I’m alone.",
-            "It’s hard to get out of bed; I feel heavy, hopeless, or numb.",
-            "My heart races, I feel shaky, or I panic when I have to talk to people.",
-            "I’m exhausted, not sleeping well, and physically drained.",
+            "I'm managing my daily tasks, but I feel a bit empty when I'm alone.",
+            "I find it difficult to find motivation, and things feel heavier than usual.",
+            "I feel physically anxious (racing heart, shakiness) in social situations.",
+            "I feel physically exhausted or drained.",
             "Other (please explain)"
         ],
         "keys": ["A", "B", "C", "D", "OTHER"]
     },
     "q6": {
-        "text": "When you are alone, what do you usually do?",
+        "text": "When you are by yourself, where does your focus tend to go?",
         "options": [
-            "Scroll social media and see everyone else having fun.",
-            "Sleep or stare at the ceiling.",
-            "Focus intensely on schoolwork to distract myself.",
-            "Ruminate (think over and over) about what is 'wrong' with me.",
+            "I often check social media and compare my life to others.",
+            "I tend to sleep or zone out to escape.",
+            "I distract myself with work or study.",
+            "I find myself replaying thoughts about what I could do differently.",
             "Other (please explain)"
         ],
         "keys": ["A", "B", "C", "D", "OTHER"]
     },
     "q7": {
-        "text": "If you could wave a magic wand and fix one thing right now, what would it be?",
+        "text": "If you could change one aspect of your situation today, what would it be?",
         "options": [
-            "To have just one person who really 'gets' me.",
-            "To have a big group of friends to hang out with on weekends.",
-            "To stop feeling so afraid of social interaction.",
-            "To stop feeling this deep sadness/numbness.",
+            "To find someone who truly understands me.",
+            "To have a community to do things with.",
+            "To feel more confident and calm when talking to people.",
+            "To lift this feeling of heaviness or sadness.",
             "Other (please explain)"
         ],
         "keys": ["A", "B", "C", "D", "OTHER"]
@@ -312,8 +321,27 @@ if st.session_state.step == 0:
         next_step()
         st.rerun()
 
-# --- STEP 1: SAFETY TRIAGE ---
+# --- STEP 1: PURPOSE (SELF OR OTHER) ---
 elif st.session_state.step == 1:
+    st.subheader("Welcome")
+    q = questions['q0']
+    response = st.radio(q['text'], q['options'], index=None)
+    
+    if st.button("Next"):
+        if response:
+            key = q['keys'][q['options'].index(response)]
+            st.session_state.answers['q0'] = key
+            
+            if key == "OTHER_PERSON":
+                st.session_state.step = 88 # Jump to 'Helper' page
+            else:
+                next_step()
+            st.rerun()
+        else:
+            st.error("Please select an option to continue.")
+
+# --- STEP 2: SAFETY TRIAGE ---
+elif st.session_state.step == 2:
     st.subheader("Safety Check")
     q = questions['q1']
     response = st.radio(q['text'], q['options'], index=None)
@@ -329,8 +357,8 @@ elif st.session_state.step == 1:
         else:
             st.error("Please select an option to continue.")
 
-# --- STEP 2: ROOT CAUSE (Questions 2-4) ---
-elif st.session_state.step == 2:
+# --- STEP 3: ROOT CAUSE (Questions 2-4) ---
+elif st.session_state.step == 3:
     st.progress(33)
     st.subheader("Understanding Your Situation")
     
@@ -349,8 +377,8 @@ elif st.session_state.step == 2:
         else:
             st.error("Please answer all questions to continue.")
 
-# --- STEP 3: SYMPTOMS (Questions 5-7) ---
-elif st.session_state.step == 3:
+# --- STEP 4: SYMPTOMS (Questions 5-7) ---
+elif st.session_state.step == 4:
     st.progress(66)
     st.subheader("How It Affects You")
     
@@ -368,6 +396,41 @@ elif st.session_state.step == 3:
         else:
             st.error("Please answer all questions to continue.")
 
+# --- STEP 88: HELPER RESOURCE PAGE (For those helping friends) ---
+elif st.session_state.step == 88:
+    st.header("Supporting a Friend")
+    st.markdown("""
+    It takes courage and kindness to look out for others. Research shows that social support is one of the most critical factors in mental health.
+    
+    **Here are a few ways you can support someone who might be struggling:**
+    
+    * **Listen without solving:** Often, people just need to be heard. You don't need to fix their problem; just validating their feelings ("That sounds really hard") is powerful.
+    * **Invite them along:** Keep inviting them to low-pressure activities (getting lunch, studying), even if they say no often.
+    * **Know your limits:** You are a friend, not a therapist. If you are worried about their safety, it is okay to ask for professional help.
+    """)
+    
+    st.subheader("Resources to Share or Use")
+    
+    helper_resources = [
+        {"name": "BYU CAPS (Referring a Student)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. You can call them for advice on how to help a friend."},
+        {"name": "Seize the Awkward", "url": "https://seizetheawkward.org/", "desc": "A great guide on how to start conversations about mental health with friends."},
+        {"name": "End Social Isolation: How to Help", "url": "https://www.endsocialisolation.org/support/", "desc": "Tips on recognizing signs of loneliness in others."}
+    ]
+    
+    for res in helper_resources:
+        st.markdown(f"""
+        <div class="resource-box">
+            <div class="resource-title">{res['name']}</div>
+            <div class="resource-desc">{res['desc']}</div>
+            <a href="{res['url']}" target="_blank" class="resource-link">Visit Website -></a>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    if st.button("Start Over"):
+        restart()
+        st.rerun()
+
 # --- STEP 99: IMMEDIATE CRISIS SCREEN ---
 elif st.session_state.step == 99:
     # REPLACED ST.ERROR WITH A CALMER LAYOUT
@@ -384,6 +447,7 @@ elif st.session_state.step == 99:
             <li>
                 <strong>BYU CAPS (Counseling & Psychological Services):</strong> 
                 <br>Call <strong>801.422.3035</strong>.
+                <br><em>Free counseling and psychology services for students.</em>
                 <br><a href="https://caps.byu.edu/" target="_blank" style="color:#58a6ff;">Visit Website</a>
                 <br><strong>Walk-in Hours:</strong> 8:00 AM - 5:00 PM, Mon-Fri (1500 WSC)
             </li>
@@ -398,8 +462,8 @@ elif st.session_state.step == 99:
         restart()
         st.rerun()
 
-# --- STEP 4: RESULTS & RESOURCES ---
-elif st.session_state.step == 4:
+# --- STEP 5: RESULTS & RESOURCES ---
+elif st.session_state.step == 5:
     st.progress(100)
     
     group_id = determine_archetype(st.session_state.answers)
@@ -408,16 +472,16 @@ elif st.session_state.step == 4:
         1: { "title": "Crisis Support", "msg": "Please reach out for immediate help.", "resources": [] },
         2: {
             "title": "Emotional Loneliness (Lonely in a Crowd)",
-            "msg": "You are surrounded by people, yet you feel invisible. This is 'Emotional Loneliness.' It’s painful to be seen but not known. Your loneliness isn't about needing *more* people, but needing *deeper* connection.",
+            "msg": "You are surrounded by people, yet you feel invisible. This is often called 'Emotional Loneliness.' It’s painful to be seen but not known. Your experience isn't necessarily about needing *more* people, but needing *deeper* connection.",
             "resources": [
                 {"name": "End Social Isolation (Deepening Connections)", "url": "https://www.endsocialisolation.org/support/"},
-                {"name": "BYU CAPS (Group Therapy)", "url": "https://caps.byu.edu/", "desc": "Counseling & Psychological Services: Free, confidential group sessions to connect with others."},
+                {"name": "BYU CAPS (Group Therapy)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Join confidential group sessions to connect with others."},
                 {"name": "CDC: How Right Now", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html"}
             ]
         },
         3: {
             "title": "Transitional Isolation (Fish Out of Water)",
-            "msg": "You are in a transition gap. You left your old support system and haven't built the new one yet. This is normal for students, but it requires action to fix.",
+            "msg": "You are in a transition gap. You left your old support system and haven't fully built the new one yet. This is a very normal experience for students, but it requires small steps to build that new village.",
             "resources": [
                 {"name": "BYU Clubs & Associations", "url": "https://clubs.byu.edu/"},
                 {"name": "End Social Isolation: Breaking the Ice", "url": "https://www.endsocialisolation.org/support/"},
@@ -426,36 +490,36 @@ elif st.session_state.step == 4:
         },
         4: {
             "title": "Social Anxiety & Avoidance",
-            "msg": "Your brain is perceiving social situations as a threat. The goal isn't to stop being lonely instantly, but to lower the anxiety so you can connect without panic.",
+            "msg": "Your brain might be perceiving social situations as a threat. The goal isn't to stop being lonely instantly, but to lower the anxiety so you can connect without feeling panic.",
             "resources": [
-                {"name": "BYU CAPS (Anxiety Services)", "url": "https://caps.byu.edu/", "desc": "Counseling & Psychological Services: Free, confidential support from licensed professionals."},
+                {"name": "BYU CAPS (Anxiety Services)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Get confidential support from licensed professionals."},
                 {"name": "CDC: Coping with Stress", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html"},
                 {"name": "Crisis Text Line (Text HOME to 741741)", "url": "https://www.crisistextline.org/topics/loneliness/"}
             ]
         },
         5: {
             "title": "Situational Grief & Loss",
-            "msg": "You are grieving a connection. Whether it's a breakup or a passing, this is a specific kind of loneliness that takes time to heal. Be gentle with yourself.",
+            "msg": "You are grieving a connection. Whether it's a breakup or a passing, this is a specific kind of loneliness that takes time to heal. Please be gentle with yourself.",
             "resources": [
-                {"name": "BYU CAPS (Grief Support)", "url": "https://caps.byu.edu/", "desc": "Counseling & Psychological Services: Free, confidential counseling for navigating loss."},
+                {"name": "BYU CAPS (Grief Support)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Confidential counseling for navigating loss."},
                 {"name": "Crisis Text Line (For late nights)", "url": "https://www.crisistextline.org/topics/loneliness/"},
                 {"name": "End Social Isolation", "url": "https://www.endsocialisolation.org/support/"}
             ]
         },
         6: {
             "title": "Identity & Belonging",
-            "msg": "It is exhausting to wear a mask. You deserve a space where you can be fully yourself without fear of judgment. Finding your specific community is key.",
+            "msg": "It is exhausting to wear a mask. You deserve a space where you can be fully yourself without fear of judgment. Finding your specific community is key to lifting this weight.",
             "resources": [
-                {"name": "BYU CAPS (Safe Space)", "url": "https://caps.byu.edu/", "desc": "Counseling & Psychological Services: A free, safe, and confidential place to talk with a professional."},
+                {"name": "BYU CAPS (Safe Space)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. A safe, confidential place to talk with a professional."},
                 {"name": "USGA at BYU (Unofficial)", "url": "https://www.usgabyu.com/"},
                 {"name": "End Social Isolation", "url": "https://www.endsocialisolation.org/support/"}
             ]
         },
         7: {
             "title": "Burnout & Overwhelm",
-            "msg": "You are prioritizing survival over connection, but connection is part of survival. You need to schedule 'people time' just like you schedule class.",
+            "msg": "You might be prioritizing survival over connection, but connection is part of survival. You need to schedule 'people time' just like you schedule class.",
             "resources": [
-                {"name": "BYU CAPS (Stress Management)", "url": "https://caps.byu.edu/", "desc": "Counseling & Psychological Services: Free professional support for managing academic stress."},
+                {"name": "BYU CAPS (Stress Management)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Professional support for managing academic stress."},
                 {"name": "EduMed Balance Resources", "url": "https://www.edumed.org/resources/student-loneliness-help-and-support/"},
                 {"name": "CDC: Time Management & Health", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html"}
             ]
@@ -464,7 +528,7 @@ elif st.session_state.step == 4:
             "title": "Chronic Struggle",
             "msg": "This loneliness feels like a heavy blanket you can't shake. It might be linked to your brain chemistry (Depression), and that means it is treatable and not your fault.",
             "resources": [
-                {"name": "BYU CAPS (Make an Appointment)", "url": "https://caps.byu.edu/", "desc": "Counseling & Psychological Services: Free, confidential therapy for full-time students."},
+                {"name": "BYU CAPS (Make an Appointment)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Confidential therapy for full-time students."},
                 {"name": "CDC: Understanding Mental Health", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html"},
                 {"name": "Crisis Text Line", "url": "https://www.crisistextline.org/topics/loneliness/"}
             ]
@@ -475,7 +539,7 @@ elif st.session_state.step == 4:
             "resources": [
                 {"name": "End Social Isolation (Social Media Limits)", "url": "https://www.endsocialisolation.org/support/"},
                 {"name": "CDC: Building Self-Worth", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html"},
-                {"name": "BYU CAPS", "url": "https://caps.byu.edu/", "desc": "Counseling & Psychological Services: Free support to help rebuild self-esteem."}
+                {"name": "BYU CAPS", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Support to help rebuild self-esteem."}
             ]
         },
         10: {
@@ -484,7 +548,7 @@ elif st.session_state.step == 4:
             "resources": [
                 {"name": "End Social Isolation (Main Library)", "url": "https://www.endsocialisolation.org/support/"},
                 {"name": "CDC Loneliness Page", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html"},
-                {"name": "BYU CAPS", "url": "https://caps.byu.edu/", "desc": "Counseling & Psychological Services: Free, confidential support for any student."}
+                {"name": "BYU CAPS", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Confidential support for any student."}
             ]
         }
     }
