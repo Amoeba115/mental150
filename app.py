@@ -349,7 +349,7 @@ if st.session_state.step == 0:
     st.markdown("""
     <div class="disclaimer">
         Disclaimer: This tool is a student-created project and is not officially affiliated with Brigham Young University. 
-        It is designed for educational and resource-finding purposes only and does not constitute professional medical advice.
+        It is designed for educational and resource-finding purposes only and does not constitute professional medical advice or diagnosis.
     </div>
     """, unsafe_allow_html=True)
 
