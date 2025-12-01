@@ -4,7 +4,7 @@ import streamlit as st
 # 1. PAGE CONFIGURATION & STYLING
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="BYU Mental Health & Connection Help",
+    page_title="Student Connection & Mental Health Guide",
     page_icon="🧠",
     layout="centered"
 )
@@ -24,7 +24,13 @@ st.markdown("""
         color: #ffffff;
         font-weight: 700;
         text-align: center;
-        padding-bottom: 20px;
+        padding-bottom: 5px;
+    }
+    .subtitle {
+        text-align: center;
+        color: #58a6ff;
+        font-weight: bold;
+        margin-bottom: 20px;
     }
     h2, h3 {
         color: #58a6ff; /* Soft Blue for headers (Github dark mode style) */
@@ -128,6 +134,16 @@ st.markdown("""
         border: 1px solid #30363d;
         color: #e0e0e0;
     }
+
+    /* Disclaimer Footer */
+    .disclaimer {
+        font-size: 0.8rem;
+        color: #6e7681;
+        text-align: center;
+        margin-top: 50px;
+        padding-top: 20px;
+        border-top: 1px solid #30363d;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -150,7 +166,7 @@ def restart():
 # 3. QUESTIONNAIRE DATA (Reworded for Softness)
 # -----------------------------------------------------------------------------
 questions = {
-    # Q0: New Initial Question
+    # Q0: Initial Question
     "q0": {
         "text": "Before we begin, who are you looking for resources for today?",
         "options": [
@@ -159,7 +175,7 @@ questions = {
         ],
         "keys": ["SELF", "OTHER_PERSON"]
     },
-    # Q1 kept strict for safety triage but slightly softened text
+    # Q1: Safety Check
     "q1": {
         "text": "How are you feeling about your safety right now?",
         "options": [
@@ -240,64 +256,70 @@ questions = {
 }
 
 # -----------------------------------------------------------------------------
-# 4. LOGIC ENGINE
+# 4. LOGIC ENGINE (ROBUST MULTI-RESULT)
 # -----------------------------------------------------------------------------
-def determine_archetype(answers):
+def determine_matches(answers):
     """
-    Analyzes answers. If 'OTHER' is used too frequently, or if no specific pattern is matched,
-    it defaults to Group 10 (General).
+    Analyzes answers and collects ALL matching categories (Robust/Multi-result).
+    Returns a list of group IDs.
     """
-    
-    # 1. CRISIS CASE (Safety First) - Explicit check, cannot be 'Other'
+    matches = []
+
+    # 1. CRISIS CASE (Safety First) - Exclusive
     if answers.get('q1') == 'C':
-        return 1
+        return [1]
     
-    # Check for too many "Other" answers (e.g., 3 or more)
+    # 2. Check for "Other" overload - Exclusive if nothing else works
     other_count = list(answers.values()).count('OTHER')
     if other_count >= 3:
-        return 10
+        return [10]
         
-    # 2. CHRONIC / CLINICAL STRUGGLE
+    # --- NON-EXCLUSIVE CHECKS (Collect all matches) ---
+    
+    # Chronic / Clinical Struggle
     if answers.get('q4') == 'A' or answers.get('q5') == 'B':
-        return 8
+        matches.append(8)
         
-    # 3. SITUATIONAL / RECENTLY HEARTBROKEN
+    # Situational / Grief
     if answers.get('q2') == 'C' or answers.get('q4') == 'C' or answers.get('q3') == 'E':
-        return 5
+        matches.append(5)
 
-    # 4. SOCIALLY ANXIOUS
+    # Social Anxiety
     if answers.get('q2') == 'D' or answers.get('q3') == 'C' or answers.get('q5') == 'C':
-        return 4
+        matches.append(4)
         
-    # 5. IDENTITY ISOLATED
+    # Identity Isolated
     if answers.get('q2') == 'E':
-        return 6
+        matches.append(6)
         
-    # 6. BURNOUT
+    # Burnout
     if answers.get('q3') == 'D':
-        return 7
+        matches.append(7)
         
-    # 7. FRESHMAN / ISOLATION
+    # Freshman / Isolation
     if answers.get('q2') == 'B' or answers.get('q4') == 'B':
-        return 3
+        matches.append(3)
         
-    # 8. EMOTIONAL LONELINESS
+    # Emotional Loneliness
     if answers.get('q2') == 'A' or answers.get('q7') == 'A':
-        return 2
+        matches.append(2)
 
-    # 9. COMPARISON TRAP
+    # Comparison Trap
     if answers.get('q6') == 'A':
-        return 9
+        matches.append(9)
         
-    # 10. GENERAL / CATCH-ALL
-    return 10
+    # Fallback: If no specific triggers found, use General
+    if not matches:
+        matches.append(10)
+        
+    # Limit to top 3 matches to avoid overwhelming the user
+    return list(set(matches))[:3]
 
 # Helper to render question with conditional "Other" text box
 def render_question(key_id):
     q = questions[key_id]
     response = st.radio(q['text'], q['options'], index=None, key=f"rad_{key_id}")
     
-    # If they selected the last option (which we know is "Other" for Q2-Q7)
     if response and "Other" in response:
         st.text_input("Please explain (optional):", key=f"text_{key_id}", placeholder="Type your answer here...")
         
@@ -309,7 +331,9 @@ def render_question(key_id):
 
 # --- STEP 0: WELCOME SCREEN ---
 if st.session_state.step == 0:
-    st.title("BYU Mental Health & Connection Help")
+    st.title("Student Connection & Mental Health Guide")
+    st.markdown('<div class="subtitle">Designed for BYU Students</div>', unsafe_allow_html=True)
+    
     st.markdown("""
     College can be crowded, but it can also feel incredibly quiet. 
     
@@ -320,6 +344,14 @@ if st.session_state.step == 0:
     if st.button("Start Assessment"):
         next_step()
         st.rerun()
+
+    # Footer Disclaimer
+    st.markdown("""
+    <div class="disclaimer">
+        Disclaimer: This tool is a student-created project and is not officially affiliated with Brigham Young University. 
+        It is designed for educational and resource-finding purposes only and does not constitute professional medical advice.
+    </div>
+    """, unsafe_allow_html=True)
 
 # --- STEP 1: PURPOSE (SELF OR OTHER) ---
 elif st.session_state.step == 1:
@@ -396,7 +428,7 @@ elif st.session_state.step == 4:
         else:
             st.error("Please answer all questions to continue.")
 
-# --- STEP 88: HELPER RESOURCE PAGE (For those helping friends) ---
+# --- STEP 88: HELPER RESOURCE PAGE ---
 elif st.session_state.step == 88:
     st.header("Supporting a Friend")
     st.markdown("""
@@ -412,9 +444,9 @@ elif st.session_state.step == 88:
     st.subheader("Resources to Share or Use")
     
     helper_resources = [
-        {"name": "BYU CAPS (Referring a Student)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. You can call them for advice on how to help a friend."},
-        {"name": "Seize the Awkward", "url": "https://seizetheawkward.org/", "desc": "A great guide on how to start conversations about mental health with friends."},
-        {"name": "End Social Isolation: How to Help", "url": "https://www.endsocialisolation.org/support/", "desc": "Tips on recognizing signs of loneliness in others."}
+        {"name": "BYU CAPS (Referring a Student)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. They can guide you on how to set boundaries and effectively support a friend in crisis."},
+        {"name": "Seize the Awkward", "url": "https://seizetheawkward.org/", "desc": "A guide to starting conversations about mental health. It provides practical icebreakers to help you move past the awkwardness and offer real support."},
+        {"name": "End Social Isolation: How to Help", "url": "https://www.endsocialisolation.org/support/", "desc": "An educational hub on the signs of loneliness. It helps you recognize subtle distress signals in friends so you can reach out sooner."}
     ]
     
     for res in helper_resources:
@@ -433,7 +465,6 @@ elif st.session_state.step == 88:
 
 # --- STEP 99: IMMEDIATE CRISIS SCREEN ---
 elif st.session_state.step == 99:
-    # REPLACED ST.ERROR WITH A CALMER LAYOUT
     st.markdown("""
     <div class="info-box">
         <h2 style="color: #58a6ff; margin-top:0;">Support Resources</h2>
@@ -466,113 +497,122 @@ elif st.session_state.step == 99:
 elif st.session_state.step == 5:
     st.progress(100)
     
-    group_id = determine_archetype(st.session_state.answers)
+    # Run the robust, multi-result logic
+    matches = determine_matches(st.session_state.answers)
     
+    st.header("Your Personalized Resources")
+    st.markdown("Based on your answers, we have identified a few specific areas where support might be helpful.")
+    st.write("")
+    
+    # Full Content Dictionary (Keys match the Group IDs)
     results_content = {
-        1: { "title": "Crisis Support", "msg": "Please reach out for immediate help.", "resources": [] },
+        1: { 
+            "topic": "crisis support",
+            "resources": [] 
+        },
         2: {
-            "title": "Emotional Loneliness (Lonely in a Crowd)",
-            "msg": "You are surrounded by people, yet you feel invisible. This is often called 'Emotional Loneliness.' It’s painful to be seen but not known. Your experience isn't necessarily about needing *more* people, but needing *deeper* connection.",
+            "topic": "feelings of loneliness despite being around others",
             "resources": [
-                {"name": "End Social Isolation (Deepening Connections)", "url": "https://www.endsocialisolation.org/support/"},
-                {"name": "BYU CAPS (Group Therapy)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Join confidential group sessions to connect with others."},
-                {"name": "CDC: How Right Now", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html"}
+                {"name": "End Social Isolation (Deepening Connections)", "url": "https://www.endsocialisolation.org/support/", "desc": "Articles focused on deepening existing relationships. Learn techniques to move past surface-level talk and build the vulnerability needed for true connection."},
+                {"name": "BYU CAPS (Group Therapy)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Group therapy provides a safe environment to practice connecting with others who also feel isolated."},
+                {"name": "CDC: How Right Now", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html", "desc": "Practical strategies for emotional well-being. It offers tools to improve your social health and bridge the gap between being seen and being known."}
             ]
         },
         3: {
-            "title": "Transitional Isolation (Fish Out of Water)",
-            "msg": "You are in a transition gap. You left your old support system and haven't fully built the new one yet. This is a very normal experience for students, but it requires small steps to build that new village.",
+            "topic": "adjusting to a new environment",
             "resources": [
-                {"name": "BYU Clubs & Associations", "url": "https://clubs.byu.edu/"},
-                {"name": "End Social Isolation: Breaking the Ice", "url": "https://www.endsocialisolation.org/support/"},
-                {"name": "CDC: Finding Connection", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html"}
+                {"name": "BYU Clubs & Associations", "url": "https://clubs.byu.edu/", "desc": "The central directory for student organizations. Finding a group based on shared interests is the fastest way to build a new support system in a new environment."},
+                {"name": "End Social Isolation: Breaking the Ice", "url": "https://www.endsocialisolation.org/support/", "desc": "Guides on breaking the ice and starting conversations. These tips help overcome the initial friction of meeting new people during life transitions."},
+                {"name": "CDC: Finding Connection", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html", "desc": "Resources on building community. Learn how to actively seek connection and establish a sense of belonging in a new place."}
             ]
         },
         4: {
-            "title": "Social Anxiety & Avoidance",
-            "msg": "Your brain might be perceiving social situations as a threat. The goal isn't to stop being lonely instantly, but to lower the anxiety so you can connect without feeling panic.",
+            "topic": "social anxiety and nervousness",
             "resources": [
-                {"name": "BYU CAPS (Anxiety Services)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Get confidential support from licensed professionals."},
-                {"name": "CDC: Coping with Stress", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html"},
-                {"name": "Crisis Text Line (Text HOME to 741741)", "url": "https://www.crisistextline.org/topics/loneliness/"}
+                {"name": "BYU CAPS (Anxiety Services)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Licensed professionals can teach you biofeedback and cognitive strategies to manage physiological anxiety symptoms."},
+                {"name": "CDC: Coping with Stress", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html", "desc": "Stress management techniques. Learn coping mechanisms to lower your body's 'fight or flight' response before social interactions."},
+                {"name": "Crisis Text Line (Text HOME to 741741)", "url": "https://www.crisistextline.org/topics/loneliness/", "desc": "Immediate, anonymous support via text. It provides a non-judgmental space to de-escalate panic attacks or intense anxiety in the moment."}
             ]
         },
         5: {
-            "title": "Situational Grief & Loss",
-            "msg": "You are grieving a connection. Whether it's a breakup or a passing, this is a specific kind of loneliness that takes time to heal. Please be gentle with yourself.",
+            "topic": "recent loss or heartbreak",
             "resources": [
-                {"name": "BYU CAPS (Grief Support)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Confidential counseling for navigating loss."},
-                {"name": "Crisis Text Line (For late nights)", "url": "https://www.crisistextline.org/topics/loneliness/"},
-                {"name": "End Social Isolation", "url": "https://www.endsocialisolation.org/support/"}
+                {"name": "BYU CAPS (Grief Support)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Therapists can help you process the complex emotions of grief and adjust to life after a significant loss."},
+                {"name": "Crisis Text Line (For late nights)", "url": "https://www.crisistextline.org/topics/loneliness/", "desc": "24/7 support for overwhelming waves of sadness. Connect with a crisis counselor whenever grief feels too heavy to carry alone, day or night."},
+                {"name": "End Social Isolation", "url": "https://www.endsocialisolation.org/support/", "desc": "Resources on understanding emotional loss. Reading about shared experiences can help normalize your grief and reduce the feeling of isolation."}
             ]
         },
         6: {
-            "title": "Identity & Belonging",
-            "msg": "It is exhausting to wear a mask. You deserve a space where you can be fully yourself without fear of judgment. Finding your specific community is key to lifting this weight.",
+            "topic": "finding a community where you belong",
             "resources": [
-                {"name": "BYU CAPS (Safe Space)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. A safe, confidential place to talk with a professional."},
-                {"name": "USGA at BYU (Unofficial)", "url": "https://www.usgabyu.com/"},
-                {"name": "End Social Isolation", "url": "https://www.endsocialisolation.org/support/"}
+                {"name": "BYU CAPS (Safe Space)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. This is a confidential, safe space to explore your identity without fear of judgment or rejection."},
+                {"name": "USGA at BYU (Unofficial)", "url": "https://www.usgabyu.com/", "desc": "An unofficial resource for LGBTQ+ students at BYU. Connecting with peers who share your lived experience can be crucial for feeling understood and valid."},
+                {"name": "End Social Isolation", "url": "https://www.endsocialisolation.org/support/", "desc": "Articles on belonging and community. Learn how to find your 'tribe' and foster relationships where you don't have to mask your true self."}
             ]
         },
         7: {
-            "title": "Burnout & Overwhelm",
-            "msg": "You might be prioritizing survival over connection, but connection is part of survival. You need to schedule 'people time' just like you schedule class.",
+            "topic": "feelings of burnout and overwhelm",
             "resources": [
-                {"name": "BYU CAPS (Stress Management)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Professional support for managing academic stress."},
-                {"name": "EduMed Balance Resources", "url": "https://www.edumed.org/resources/student-loneliness-help-and-support/"},
-                {"name": "CDC: Time Management & Health", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html"}
+                {"name": "BYU CAPS (Stress Management)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Learn stress management techniques to balance academic rigor with the social rest you need."},
+                {"name": "EduMed Balance Resources", "url": "https://www.edumed.org/resources/student-loneliness-help-and-support/", "desc": "A guide specifically for student mental health. It offers strategies to harmonize your study schedule with essential self-care and social time."},
+                {"name": "CDC: Time Management & Health", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html", "desc": "Resources on time management and health. Prioritizing your well-being is productive, and this guide helps you structure time for connection."}
             ]
         },
         8: {
-            "title": "Chronic Struggle",
-            "msg": "This loneliness feels like a heavy blanket you can't shake. It might be linked to your brain chemistry (Depression), and that means it is treatable and not your fault.",
+            "topic": "ongoing feelings of heaviness or depression",
             "resources": [
-                {"name": "BYU CAPS (Make an Appointment)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Confidential therapy for full-time students."},
-                {"name": "CDC: Understanding Mental Health", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html"},
-                {"name": "Crisis Text Line", "url": "https://www.crisistextline.org/topics/loneliness/"}
+                {"name": "BYU CAPS (Make an Appointment)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Regular therapy is often the most effective treatment for persistent depression or long-term struggles."},
+                {"name": "CDC: Understanding Mental Health", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html", "desc": "Educational resources on mental health conditions. Understanding the biology behind depression can help separate your identity from the symptoms you are feeling."},
+                {"name": "Crisis Text Line", "url": "https://www.crisistextline.org/topics/loneliness/", "desc": "Immediate support for moments of hopelessness. When the darkness feels permanent, a crisis counselor can help keep you safe right now."}
             ]
         },
         9: {
-            "title": "The Comparison Trap",
-            "msg": "You are comparing your 'behind-the-scenes' with everyone else's 'highlight reel.' BYU culture makes this hard, but remember: looking happy isn't the same as being connected.",
+            "topic": "negative comparisons on social media",
             "resources": [
-                {"name": "End Social Isolation (Social Media Limits)", "url": "https://www.endsocialisolation.org/support/"},
-                {"name": "CDC: Building Self-Worth", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html"},
-                {"name": "BYU CAPS", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Support to help rebuild self-esteem."}
+                {"name": "End Social Isolation (Social Media Limits)", "url": "https://www.endsocialisolation.org/support/", "desc": "Guides on managing social media usage. Learn to curate your digital environment to reduce FOMO and focus on genuine, offline connections."},
+                {"name": "CDC: Building Self-Worth", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html", "desc": "Tools for building self-worth independent of external validation. Strengthening your internal confidence helps break the cycle of comparing yourself to others."},
+                {"name": "BYU CAPS", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Therapy can help dismantle negative thought patterns and rebuild self-esteem damaged by comparison."}
             ]
         },
         10: {
-            "title": "General Loneliness",
-            "msg": "Your answers indicate a unique situation or perhaps a mix of factors. Loneliness is complex, but these resources are the best place to start building your bridge back to connection.",
+            "topic": "connection and general well-being",
             "resources": [
-                {"name": "End Social Isolation (Main Library)", "url": "https://www.endsocialisolation.org/support/"},
-                {"name": "CDC Loneliness Page", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html"},
-                {"name": "BYU CAPS", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Confidential support for any student."}
+                {"name": "End Social Isolation (Main Library)", "url": "https://www.endsocialisolation.org/support/", "desc": "A comprehensive library of connection resources. Browse various topics to find the specific advice that resonates with your unique situation."},
+                {"name": "CDC Loneliness Page", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html", "desc": "The official guide on the loneliness epidemic. It provides a broad range of coping strategies and facts to help you understand what you are feeling."},
+                {"name": "BYU CAPS", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. A general consultation can help you untangle complex feelings and determine the best path forward."}
             ]
         }
     }
     
-    result = results_content[group_id]
-    
-    st.header(result['title'])
-    st.info(result['msg'])
-    
-    st.subheader("Recommended Resources for You")
-    
-    for res in result['resources']:
-        # Check for description field and render it if present
-        desc_html = f'<div class="resource-desc">{res["desc"]}</div>' if "desc" in res else ""
+    # Iterate through all matches found
+    for group_id in matches:
+        data = results_content[group_id]
         
-        st.markdown(f"""
-        <div class="resource-box">
-            <div class="resource-title">{res['name']}</div>
-            {desc_html}
-            <a href="{res['url']}" target="_blank" class="resource-link">Visit Website -></a>
-        </div>
-        """, unsafe_allow_html=True)
+        # Section Header
+        st.subheader(f"To help with {data['topic']}, consider these resources:")
+        
+        # Render Cards
+        for res in data['resources']:
+            desc_html = f'<div class="resource-desc">{res["desc"]}</div>' if "desc" in res else ""
+            st.markdown(f"""
+            <div class="resource-box">
+                <div class="resource-title">{res['name']}</div>
+                {desc_html}
+                <a href="{res['url']}" target="_blank" class="resource-link">Visit Website -></a>
+            </div>
+            """, unsafe_allow_html=True)
+            
+        st.write("") # Spacing between sections
         
     st.markdown("---")
     if st.button("Start Over"):
         restart()
         st.rerun()
+
+    # Footer Disclaimer
+    st.markdown("""
+    <div class="disclaimer">
+        Disclaimer: This tool is a student-created project and is not officially affiliated with Brigham Young University. 
+        It is designed for educational and resource-finding purposes only and does not constitute professional medical advice.
+    </div>
+    """, unsafe_allow_html=True)
