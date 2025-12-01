@@ -1,4 +1,4 @@
-BYU Mental Health & Connection Help🧠
+BYU Mental Health & Connection Help🐞
 
 An interactive digital assessment designed to help students identify the root causes of their loneliness and connect with targeted resources.
 
