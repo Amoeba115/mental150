@@ -441,6 +441,7 @@ elif st.session_state.step == 88:
     * **Know your limits:** You are a friend, not a therapist. If you are worried about their safety, it is okay to ask for professional help.
     """)
     
+    # Practical Tools
     st.subheader("Resources to Share or Use")
     
     helper_resources = [
@@ -455,6 +456,27 @@ elif st.session_state.step == 88:
             <div class="resource-title">{res['name']}</div>
             <div class="resource-desc">{res['desc']}</div>
             <a href="{res['url']}" target="_blank" class="resource-link">Visit Website -></a>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    st.write("")
+    
+    # Research Logic Sources
+    st.subheader("Deep Dive: The Science of Connection")
+    st.markdown("If you want to understand the research behind why connection is a vital health factor, these are the sources that informed this project:")
+
+    research_resources = [
+        {"name": "Surgeon General's Advisory on Loneliness", "url": "https://www.hhs.gov/about/news/2023/05/03/new-surgeon-general-advisory-raises-alarm-about-devastating-impact-epidemic-loneliness-isolation-united-states.html", "desc": "The 2023 advisory declaring loneliness a public health epidemic and detailing its physical health consequences."},
+        {"name": "BYU Research: Social Connection as a Vital Sign", "url": "https://news.byu.edu/intellect/byu-researchers-show-social-connection-is-still-underappreciated-as-a-medically-relevant-health-factor", "desc": "Research from BYU's Julianne Holt-Lunstad showing that social connection is as critical to physical health as exercise or diet."},
+        {"name": "Research Square: Student Loneliness", "url": "https://www.researchsquare.com/article/rs-93878/v2", "desc": "Studies analyzing the specific impact of the pandemic and transition periods on university student loneliness."}
+    ]
+
+    for res in research_resources:
+        st.markdown(f"""
+        <div class="resource-box">
+            <div class="resource-title">{res['name']}</div>
+            <div class="resource-desc">{res['desc']}</div>
+            <a href="{res['url']}" target="_blank" class="resource-link">Read Article -></a>
         </div>
         """, unsafe_allow_html=True)
     
@@ -514,7 +536,7 @@ elif st.session_state.step == 5:
             "topic": "feelings of loneliness despite being around others",
             "resources": [
                 {"name": "End Social Isolation (Deepening Connections)", "url": "https://www.endsocialisolation.org/support/", "desc": "Articles focused on deepening existing relationships. Learn techniques to move past surface-level talk and build the vulnerability needed for true connection."},
-                {"name": "BYU CAPS (Group Therapy)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Group therapy provides a safe environment to practice connecting with others who also feel isolated."},
+                {"name": "BYU CAPS (Group Therapy)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Join confidential group sessions to connect with others."},
                 {"name": "CDC: How Right Now", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html", "desc": "Practical strategies for emotional well-being. It offers tools to improve your social health and bridge the gap between being seen and being known."}
             ]
         },
@@ -546,7 +568,7 @@ elif st.session_state.step == 5:
             "topic": "finding a community where you belong",
             "resources": [
                 {"name": "BYU CAPS (Safe Space)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. This is a confidential, safe space to explore your identity without fear of judgment or rejection."},
-                {"name": "USGA at BYU (Unofficial)", "url": "https://www.usgabyu.com/", "desc": "An unofficial resource for LGBTQ+ students at BYU. Connecting with peers who share your lived experience can be crucial for feeling understood and valid."},
+                {"name": "The Trevor Project", "url": "https://www.thetrevorproject.org/", "desc": "A leading organization providing crisis intervention and support for LGBTQ young people. Connect with a safe, welcoming community 24/7 via text, chat, or phone."},
                 {"name": "End Social Isolation", "url": "https://www.endsocialisolation.org/support/", "desc": "Articles on belonging and community. Learn how to find your 'tribe' and foster relationships where you don't have to mask your true self."}
             ]
         },
