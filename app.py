@@ -357,7 +357,7 @@ def render_question(key_id):
     response = st.radio(q['text'], q['options'], index=None, key=f"rad_{key_id}")
     
     if response and "Other" in response:
-        st.text_input("Please explain (optional):", key=f"text_{key_id}", placeholder="Type your answer here...")
+        st.text_input("Please explain (optional):", key=f"text_{key_id}", placeholder="Type your answer here...", max_chars=100)
         
     return response
 
