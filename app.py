@@ -1,13 +1,36 @@
 import streamlit as st
+import streamlit.components.v1 as components
 
 # -----------------------------------------------------------------------------
-# 1. PAGE CONFIGURATION & STYLING
+# 1. PAGE CONFIGURATION & SCROLL LOGIC
 # -----------------------------------------------------------------------------
 st.set_page_config(
     page_title="Student Connection & Mental Health Guide",
     page_icon="🐞",
     layout="centered"
 )
+
+# Initialize scroll state if not present
+if 'scroll_to_top' not in st.session_state:
+    st.session_state.scroll_to_top = False
+
+# JavaScript to force scroll to top
+if st.session_state.scroll_to_top:
+    components.html(
+        """
+            <script>
+                // Scroll the main Streamlit container to the top
+                var body = window.parent.document.querySelector(".main");
+                if (body) { body.scrollTop = 0; }
+                
+                // Fallback for different browser behaviors
+                window.parent.window.scrollTo(0, 0);
+            </script>
+        """,
+        height=0,
+        width=0
+    )
+    st.session_state.scroll_to_top = False
 
 # Custom CSS - DEEP NAVY / DARK MODE AESTHETIC
 st.markdown("""
@@ -157,13 +180,15 @@ if 'answers' not in st.session_state:
 
 def next_step():
     st.session_state.step += 1
+    st.session_state.scroll_to_top = True # Trigger scroll on next reload
 
 def restart():
     st.session_state.step = 0
     st.session_state.answers = {}
+    st.session_state.scroll_to_top = True # Trigger scroll on next reload
 
 # -----------------------------------------------------------------------------
-# 3. QUESTIONNAIRE DATA (Reworded for Softness)
+# 3. QUESTIONNAIRE DATA
 # -----------------------------------------------------------------------------
 questions = {
     # Q0: Initial Question
@@ -349,7 +374,7 @@ if st.session_state.step == 0:
     st.markdown("""
     <div class="disclaimer">
         Disclaimer: This tool is a student-created project and is not officially affiliated with Brigham Young University. 
-        It is designed for educational and resource-finding purposes only and does not constitute professional medical advice or diagnosis.
+        It is designed for educational and resource-finding purposes only and does not constitute professional medical advice.
     </div>
     """, unsafe_allow_html=True)
 
