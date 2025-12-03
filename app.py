@@ -16,20 +16,24 @@ if 'scroll_to_top' not in st.session_state:
 
 # JavaScript to force scroll to top
 if st.session_state.scroll_to_top:
-    components.html(
-        """
-            <script>
-                // Scroll the main Streamlit container to the top
-                var body = window.parent.document.querySelector(".main");
-                if (body) { body.scrollTop = 0; }
-                
-                // Fallback for different browser behaviors
-                window.parent.window.scrollTo(0, 0);
-            </script>
-        """,
-        height=0,
-        width=0
-    )
+    js = """
+    <script>
+        // Use a timeout to ensure the DOM is ready and the new content is loaded
+        setTimeout(function() {
+            // Target 1: The specific Streamlit main container
+            var main = window.parent.document.querySelector('section.main');
+            if (main) { main.scrollTo(0, 0); }
+            
+            // Target 2: The generic window (fallback for some mobile browsers)
+            window.parent.scrollTo(0, 0);
+            
+            // Target 3: The document body
+            window.parent.document.documentElement.scrollTop = 0;
+            window.parent.document.body.scrollTop = 0;
+        }, 50); // 50ms delay
+    </script>
+    """
+    components.html(js, height=0, width=0)
     st.session_state.scroll_to_top = False
 
 # Custom CSS - DEEP NAVY / DARK MODE AESTHETIC
