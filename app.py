@@ -1,8 +1,9 @@
 import streamlit as st
 import streamlit.components.v1 as components
+import time
 
 # -----------------------------------------------------------------------------
-# 1. PAGE CONFIGURATION & SCROLL LOGIC
+# 1. PAGE CONFIGURATION
 # -----------------------------------------------------------------------------
 st.set_page_config(
     page_title="Student Connection & Mental Health Guide",
@@ -10,27 +11,33 @@ st.set_page_config(
     layout="centered"
 )
 
+# -----------------------------------------------------------------------------
+# 2. SCROLL ANCHOR & LOGIC
+# -----------------------------------------------------------------------------
+# This invisible div is the "target" we will scroll to
+st.markdown('<div id="top_of_page"></div>', unsafe_allow_html=True)
+
 # Initialize scroll state if not present
 if 'scroll_to_top' not in st.session_state:
     st.session_state.scroll_to_top = False
 
-# JavaScript to force scroll to top
+# JavaScript to force scroll to anchor
 if st.session_state.scroll_to_top:
     js = """
     <script>
-        // Use a timeout to ensure the DOM is ready and the new content is loaded
+        // We use a slight delay to ensure the new content is rendered
         setTimeout(function() {
-            // Target 1: The specific Streamlit main container
-            var main = window.parent.document.querySelector('section.main');
-            if (main) { main.scrollTo(0, 0); }
-            
-            // Target 2: The generic window (fallback for some mobile browsers)
-            window.parent.scrollTo(0, 0);
-            
-            // Target 3: The document body
-            window.parent.document.documentElement.scrollTop = 0;
-            window.parent.document.body.scrollTop = 0;
-        }, 50); // 50ms delay
+            try {
+                // Find the anchor element in the parent document (the main app)
+                var anchor = window.parent.document.getElementById("top_of_page");
+                if (anchor) {
+                    // This method is more robust on mobile than window.scrollTo
+                    anchor.scrollIntoView({behavior: "instant", block: "start"});
+                }
+            } catch(e) {
+                console.log("Scroll error:", e);
+            }
+        }, 100);
     </script>
     """
     components.html(js, height=0, width=0)
@@ -378,7 +385,7 @@ if st.session_state.step == 0:
     st.markdown("""
     <div class="disclaimer">
         Disclaimer: This tool is a student-created project and is not officially affiliated with Brigham Young University. 
-        It is designed for educational and resource-finding purposes only and does not constitute professional medical advice.
+        It is designed for educational and resource-finding purposes only and does not constitute professional medical advice or diagnosis.
     </div>
     """, unsafe_allow_html=True)
 
@@ -664,6 +671,6 @@ elif st.session_state.step == 5:
     st.markdown("""
     <div class="disclaimer">
         Disclaimer: This tool is a student-created project and is not officially affiliated with Brigham Young University. 
-        It is designed for educational and resource-finding purposes only and does not constitute professional medical advice.
+        It is designed for educational and resource-finding purposes only and does not constitute professional medical advice or diagnosis.
     </div>
     """, unsafe_allow_html=True)
