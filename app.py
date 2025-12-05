@@ -571,72 +571,72 @@ elif st.session_state.step == 5:
         2: {
             "topic": "feelings of loneliness despite being around others",
             "resources": [
-                {"name": "End Social Isolation (Deepening Connections)", "url": "https://www.endsocialisolation.org/support/", "desc": "Articles focused on deepening existing relationships. Learn techniques to move past surface-level talk and build the vulnerability needed for true connection."},
-                {"name": "BYU CAPS (Group Therapy)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Join confidential group sessions to connect with others."},
-                {"name": "CDC: How Right Now", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html", "desc": "Practical strategies for emotional well-being. It offers tools to improve your social health and bridge the gap between being seen and being known."}
+                {"name": "CDC: Ways to Improve Social Connectedness", "url": "https://www.cdc.gov/social-connectedness/improving/", "desc": "Practical, science-backed strategies specifically for improving the quality of your social connections, rather than just increasing the quantity."},
+                {"name": "BYU CAPS (Group Therapy)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Group therapy provides a safe environment to practice connecting with others who also feel isolated."},
+                {"name": "Psychology Today: Loneliness Basics", "url": "https://www.psychologytoday.com/us/basics/loneliness", "desc": "A clear guide to understanding why we feel lonely and how to distinguish between solitude and isolation."}
             ]
         },
         3: {
             "topic": "adjusting to a new environment",
             "resources": [
+                {"name": "The Jed Foundation: Transitioning to College", "url": "https://jedfoundation.org/resource/transitioning-to-college/", "desc": "A guide specifically for the college transition. It validates the awkwardness of the freshman experience and offers tips for finding your footing."},
                 {"name": "BYU Clubs & Associations", "url": "https://clubs.byu.edu/", "desc": "The central directory for student organizations. Finding a group based on shared interests is the fastest way to build a new support system in a new environment."},
-                {"name": "End Social Isolation: Breaking the Ice", "url": "https://www.endsocialisolation.org/support/", "desc": "Guides on breaking the ice and starting conversations. These tips help overcome the initial friction of meeting new people during life transitions."},
-                {"name": "CDC: Finding Connection", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html", "desc": "Resources on building community. Learn how to actively seek connection and establish a sense of belonging in a new place."}
+                {"name": "End Social Isolation: Breaking the Ice", "url": "https://www.endsocialisolation.org/support/", "desc": "Guides on breaking the ice and starting conversations. These tips help overcome the initial friction of meeting new people during life transitions."}
             ]
         },
         4: {
             "topic": "social anxiety and nervousness",
             "resources": [
+                {"name": "ADAA: Understanding Social Anxiety", "url": "https://adaa.org/understanding-anxiety/social-anxiety-disorder", "desc": "The Anxiety & Depression Association of America provides clinical-grade information to help you understand social anxiety disorder."},
                 {"name": "BYU CAPS (Anxiety Services)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Licensed professionals can teach you biofeedback and cognitive strategies to manage physiological anxiety symptoms."},
-                {"name": "CDC: Coping with Stress", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html", "desc": "Stress management techniques. Learn coping mechanisms to lower your body's 'fight or flight' response before social interactions."},
                 {"name": "Crisis Text Line (Text HOME to 741741)", "url": "https://www.crisistextline.org/topics/loneliness/", "desc": "Immediate, anonymous support via text. It provides a non-judgmental space to de-escalate panic attacks or intense anxiety in the moment."}
             ]
         },
         5: {
             "topic": "recent loss or heartbreak",
             "resources": [
+                {"name": "APA: Coping with Loss", "url": "https://www.apa.org/topics/grief", "desc": "The American Psychological Association's guide on grief. It explains the psychology of loss and healthy ways to navigate the grieving process."},
                 {"name": "BYU CAPS (Grief Support)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Therapists can help you process the complex emotions of grief and adjust to life after a significant loss."},
-                {"name": "Crisis Text Line (For late nights)", "url": "https://www.crisistextline.org/topics/loneliness/", "desc": "24/7 support for overwhelming waves of sadness. Connect with a crisis counselor whenever grief feels too heavy to carry alone, day or night."},
-                {"name": "End Social Isolation", "url": "https://www.endsocialisolation.org/support/", "desc": "Resources on understanding emotional loss. Reading about shared experiences can help normalize your grief and reduce the feeling of isolation."}
+                {"name": "Crisis Text Line (For late nights)", "url": "https://www.crisistextline.org/topics/loneliness/", "desc": "24/7 support for overwhelming waves of sadness. Connect with a crisis counselor whenever grief feels too heavy to carry alone, day or night."}
             ]
         },
         6: {
             "topic": "finding a community where you belong",
             "resources": [
-                {"name": "BYU CAPS (Safe Space)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. This is a confidential, safe space to explore your identity without fear of judgment or rejection."},
                 {"name": "The Trevor Project", "url": "https://www.thetrevorproject.org/", "desc": "A leading organization providing crisis intervention and support for LGBTQ young people. Connect with a safe, welcoming community 24/7 via text, chat, or phone."},
+                {"name": "BYU CAPS (Safe Space)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. This is a confidential, safe space to explore your identity without fear of judgment or rejection."},
                 {"name": "End Social Isolation", "url": "https://www.endsocialisolation.org/support/", "desc": "Articles on belonging and community. Learn how to find your 'tribe' and foster relationships where you don't have to mask your true self."}
             ]
         },
         7: {
             "topic": "feelings of burnout and overwhelm",
             "resources": [
-                {"name": "BYU CAPS (Stress Management)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Learn stress management techniques to balance academic rigor with the social rest you need."},
+                {"name": "Mayo Clinic: Burnout Symptoms & Causes", "url": "https://www.mayoclinic.org/healthy-lifestyle/adult-health/in-depth/burnout/art-20046642", "desc": "A trusted medical resource to help you distinguish between normal stress and burnout, with clear strategies for recovery."},
                 {"name": "EduMed Balance Resources", "url": "https://www.edumed.org/resources/student-loneliness-help-and-support/", "desc": "A guide specifically for student mental health. It offers strategies to harmonize your study schedule with essential self-care and social time."},
-                {"name": "CDC: Time Management & Health", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html", "desc": "Resources on time management and health. Prioritizing your well-being is productive, and this guide helps you structure time for connection."}
+                {"name": "BYU CAPS (Stress Management)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Learn stress management techniques to balance academic rigor with the social rest you need."}
             ]
         },
         8: {
             "topic": "ongoing feelings of heaviness or depression",
             "resources": [
-                {"name": "BYU CAPS (Make an Appointment)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Regular therapy is often the most effective treatment for persistent depression or long-term struggles."},
-                {"name": "CDC: Understanding Mental Health", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html", "desc": "Educational resources on mental health conditions. Understanding the biology behind depression can help separate your identity from the symptoms you are feeling."},
-                {"name": "Crisis Text Line", "url": "https://www.crisistextline.org/topics/loneliness/", "desc": "Immediate support for moments of hopelessness. When the darkness feels permanent, a crisis counselor can help keep you safe right now."}
+                {"name": "NAMI: Depression Support", "url": "https://www.nami.org/About-Mental-Illness/Mental-Health-Conditions/Depression", "desc": "The National Alliance on Mental Illness provides extensive resources on living with and treating depression."},
+                {"name": "Mental Health America: Screening Tools", "url": "https://mhanational.org/conditions/depression", "desc": "Information and tools to help you understand your symptoms and how to advocate for your mental health."},
+                {"name": "BYU CAPS (Make an Appointment)", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Regular therapy is often the most effective treatment for persistent depression or long-term struggles."}
             ]
         },
         9: {
             "topic": "negative comparisons on social media",
             "resources": [
+                {"name": "The Jed Foundation: Social Media & Mental Health", "url": "https://jedfoundation.org/resource/social-media-and-mental-health/", "desc": "A deep dive into how online habits affect your mood, with tips on how to curate a feed that serves you rather than drains you."},
                 {"name": "End Social Isolation (Social Media Limits)", "url": "https://www.endsocialisolation.org/support/", "desc": "Guides on managing social media usage. Learn to curate your digital environment to reduce FOMO and focus on genuine, offline connections."},
-                {"name": "CDC: Building Self-Worth", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html", "desc": "Tools for building self-worth independent of external validation. Strengthening your internal confidence helps break the cycle of comparing yourself to others."},
-                {"name": "BYU CAPS", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. Therapy can help dismantle negative thought patterns and rebuild self-esteem damaged by comparison."}
+                {"name": "CDC: Building Self-Worth", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html", "desc": "Tools for building self-worth independent of external validation. Strengthening your internal confidence helps break the cycle of comparing yourself to others."}
             ]
         },
         10: {
             "topic": "connection and general well-being",
             "resources": [
-                {"name": "End Social Isolation (Main Library)", "url": "https://www.endsocialisolation.org/support/", "desc": "A comprehensive library of connection resources. Browse various topics to find the specific advice that resonates with your unique situation."},
-                {"name": "CDC Loneliness Page", "url": "https://www.cdc.gov/howrightnow/emotion/loneliness/index.html", "desc": "The official guide on the loneliness epidemic. It provides a broad range of coping strategies and facts to help you understand what you are feeling."},
+                {"name": "Mental Health America: Connect with Others", "url": "https://mhanational.org/resources/connect-with-others", "desc": "A broad guide on the benefits of social connection and simple steps to start building a support network."},
+                {"name": "CDC: Improving Social Connectedness", "url": "https://www.cdc.gov/social-connectedness/improving/", "desc": "Strategies to improve your social health. It provides a broad range of coping strategies and facts to help you understand what you are feeling."},
                 {"name": "BYU CAPS", "url": "https://caps.byu.edu/", "desc": "Free counseling and psychology services for students. A general consultation can help you untangle complex feelings and determine the best path forward."}
             ]
         }
