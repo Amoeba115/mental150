@@ -137,8 +137,9 @@ def analyze_other_responses(answers):
     # 3. Call AI
     try:
         genai.configure(api_key=api_key)
-        # Using 1.5 Flash for stability and speed
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        # Using specific preview model for this environment. 
+        # If running locally/deployed elsewhere, you can switch to 'gemini-1.5-flash'
+        model = genai.GenerativeModel('gemini-2.5-flash-preview-09-2025')
         
         prompt = f"""
         You are a mental health triage assistant for university students. 
