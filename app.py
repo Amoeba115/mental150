@@ -251,6 +251,7 @@ def render_question(key_id):
     
     if response and "Other" in response:
         st.text_input("Please explain (optional):", key=f"text_{key_id}", placeholder="Type your answer here...", max_chars=100)
+        st.caption("Note: Your anonymous response will be analyzed by AI to better match you with resources.")
         
     return response
 
