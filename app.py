@@ -3,6 +3,7 @@ import streamlit.components.v1 as components
 import time
 import os
 import json
+import re # Added for robust JSON parsing
 
 # Try to import the Google Generative AI library
 try:
@@ -125,13 +126,19 @@ def analyze_other_responses(answers):
     # 2. Check for API Key (Streamlit Secrets or Env Var)
     api_key = st.secrets.get("GOOGLE_API_KEY") or os.environ.get("GOOGLE_API_KEY")
     
-    if not HAS_GENAI or not api_key:
-        return [] # Fallback to standard logic if no AI available
+    if not HAS_GENAI:
+        st.warning("⚠️ AI Library not found. Please add 'google-generativeai' to requirements.txt.")
+        return []
+        
+    if not api_key:
+        st.warning("⚠️ No Google API Key found. 'Other' responses cannot be analyzed.")
+        return []
 
     # 3. Call AI
     try:
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-2.5-flash-preview-09-2025')
+        # Using 1.5 Flash for stability and speed
+        model = genai.GenerativeModel('gemini-1.5-flash')
         
         prompt = f"""
         You are a mental health triage assistant for university students. 
@@ -153,23 +160,25 @@ def analyze_other_responses(answers):
         {chr(10).join(custom_text)}
 
         INSTRUCTIONS:
-        - Return ONLY a JSON list of integers, e.g. [4, 7].
+        - Return ONLY a raw JSON list of integers, e.g. [4, 7].
+        - Do not include markdown formatting like ```json.
         - If the text is vague, return [10].
-        - If multiple categories apply, list them.
         """
         
         response = model.generate_content(prompt)
         text_result = response.text.strip()
         
-        # Clean up code blocks if present
-        if "```" in text_result:
-            text_result = text_result.replace("```json", "").replace("```", "")
-            
-        return json.loads(text_result)
+        # Robust parsing: Find the list pattern [1, 2] in the text
+        match = re.search(r'\[.*?\]', text_result)
+        if match:
+            clean_json = match.group(0)
+            return json.loads(clean_json)
+        else:
+            return [10]
         
     except Exception as e:
-        # If AI fails, just return empty list and rely on standard logic
-        print(f"AI Analysis Failed: {e}")
+        # Show error to user for debugging (remove in final production if desired)
+        st.error(f"AI Analysis Error: {str(e)}")
         return []
 
 def determine_matches(answers):
@@ -406,13 +415,13 @@ elif st.session_state.step == 5:
     st.write("")
     
     results_content = {
-        1: { "topic": "crisis support", "resources": [] },
+        1: { "topic": "a crisis", "resources": [] },
         2: { "topic": "feelings of loneliness despite being around others", "resources": [
             {"name": "CDC: Ways to Improve Social Connectedness", "url": "[https://www.cdc.gov/social-connectedness/improving/](https://www.cdc.gov/social-connectedness/improving/)", "desc": "Practical, science-backed strategies specifically for improving the quality of your social connections, rather than just increasing the quantity."},
             {"name": "BYU CAPS (Group Therapy)", "url": "[https://caps.byu.edu/](https://caps.byu.edu/)", "desc": "Free counseling and psychology services for students. Group therapy provides a safe environment to practice connecting with others who also feel isolated."},
             {"name": "Psychology Today: Loneliness Basics", "url": "[https://www.psychologytoday.com/us/basics/loneliness](https://www.psychologytoday.com/us/basics/loneliness)", "desc": "A clear guide to understanding why we feel lonely and how to distinguish between solitude and isolation."}
         ]},
-        3: { "topic": "adjusting to a new environment", "resources": [
+        3: { "topic": "the transition to a new environment", "resources": [
             {"name": "The Jed Foundation: Transitioning to College", "url": "[https://jedfoundation.org/resource/transitioning-to-college/](https://jedfoundation.org/resource/transitioning-to-college/)", "desc": "A guide specifically for the college transition. It validates the awkwardness of the freshman experience and offers tips for finding your footing."},
             {"name": "BYU Clubs & Associations", "url": "[https://clubs.byu.edu/](https://clubs.byu.edu/)", "desc": "The central directory for student organizations. Finding a group based on shared interests is the fastest way to build a new support system."},
             {"name": "End Social Isolation: Breaking the Ice", "url": "[https://www.endsocialisolation.org/support/](https://www.endsocialisolation.org/support/)", "desc": "Guides on breaking the ice and starting conversations. These tips help overcome the initial friction of meeting new people."}
@@ -427,7 +436,7 @@ elif st.session_state.step == 5:
             {"name": "BYU CAPS (Grief Support)", "url": "[https://caps.byu.edu/](https://caps.byu.edu/)", "desc": "Free counseling and psychology services for students. Therapists can help you process the complex emotions of grief."},
             {"name": "Crisis Text Line (For late nights)", "url": "[https://www.crisistextline.org/topics/loneliness/](https://www.crisistextline.org/topics/loneliness/)", "desc": "24/7 support for overwhelming waves of sadness. Connect with a crisis counselor whenever grief feels too heavy to carry alone."}
         ]},
-        6: { "topic": "finding a community where you belong", "resources": [
+        6: { "topic": "the search for a community where you belong", "resources": [
             {"name": "The Trevor Project", "url": "[https://www.thetrevorproject.org/](https://www.thetrevorproject.org/)", "desc": "A leading organization providing crisis intervention and support for LGBTQ young people. Connect with a safe, welcoming community 24/7."},
             {"name": "BYU CAPS (Safe Space)", "url": "[https://caps.byu.edu/](https://caps.byu.edu/)", "desc": "Free counseling and psychology services for students. This is a confidential, safe space to explore your identity without fear of judgment."},
             {"name": "End Social Isolation", "url": "[https://www.endsocialisolation.org/support/](https://www.endsocialisolation.org/support/)", "desc": "Articles on belonging and community. Learn how to find your 'tribe' and foster relationships where you don't have to mask your true self."}
@@ -442,12 +451,12 @@ elif st.session_state.step == 5:
             {"name": "Mental Health America: Screening Tools", "url": "[https://mhanational.org/conditions/depression](https://mhanational.org/conditions/depression)", "desc": "Information and tools to help you understand your symptoms and how to advocate for your mental health."},
             {"name": "BYU CAPS (Make an Appointment)", "url": "[https://caps.byu.edu/](https://caps.byu.edu/)", "desc": "Free counseling and psychology services for students. Regular therapy is often the most effective treatment for persistent struggles."}
         ]},
-        9: { "topic": "negative comparisons on social media", "resources": [
+        9: { "topic": "negative comparisons and social media pressure", "resources": [
             {"name": "The Jed Foundation: Social Media & Mental Health", "url": "[https://jedfoundation.org/resource/social-media-and-mental-health/](https://jedfoundation.org/resource/social-media-and-mental-health/)", "desc": "A deep dive into how online habits affect your mood, with tips on how to curate a feed that serves you rather than drains you."},
             {"name": "End Social Isolation (Social Media Limits)", "url": "[https://www.endsocialisolation.org/support/](https://www.endsocialisolation.org/support/)", "desc": "Guides on managing social media usage. Learn to curate your digital environment to reduce FOMO and focus on genuine connections."},
             {"name": "CDC: Building Self-Worth", "url": "[https://www.cdc.gov/howrightnow/emotion/loneliness/index.html](https://www.cdc.gov/howrightnow/emotion/loneliness/index.html)", "desc": "Tools for building self-worth independent of external validation. Strengthening your internal confidence helps break the comparison cycle."}
         ]},
-        10: { "topic": "connection and general well-being", "resources": [
+        10: { "topic": "general feelings of loneliness", "resources": [
             {"name": "Mental Health America: Connect with Others", "url": "[https://mhanational.org/resources/connect-with-others](https://mhanational.org/resources/connect-with-others)", "desc": "A broad guide on the benefits of social connection and simple steps to start building a support network."},
             {"name": "CDC: Improving Social Connectedness", "url": "[https://www.cdc.gov/social-connectedness/improving/](https://www.cdc.gov/social-connectedness/improving/)", "desc": "Strategies to improve your social health. It provides a broad range of coping strategies and facts to help you understand what you are feeling."},
             {"name": "BYU CAPS", "url": "[https://caps.byu.edu/](https://caps.byu.edu/)", "desc": "Free counseling and psychology services for students. A general consultation can help you untangle complex feelings."}
@@ -456,7 +465,7 @@ elif st.session_state.step == 5:
     
     for group_id in matches:
         data = results_content[group_id]
-        st.subheader(f"To help with {data['topic']}, consider these resources:")
+        st.subheader(f"It looks like you may be navigating {data['topic']}. Here are some resources for you:")
         for res in data['resources']:
             st.markdown(f'<div class="resource-box"><div class="resource-title">{res["name"]}</div><div class="resource-desc">{res["desc"]}</div><a href="{res["url"]}" target="_blank" class="resource-link">Visit Website -></a></div>', unsafe_allow_html=True)
         st.write("")
