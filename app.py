@@ -363,7 +363,7 @@ elif st.session_state.step == 88:
     st.markdown("* **Listen without solving:** Often, people just need to be heard.\n* **Invite them along:** Keep inviting them to low-pressure activities.\n* **Know your limits:** It is okay to ask for professional help.")
     
     st.subheader("Resources to Share or Use")
-    # UPDATED: Removed Markdown []() syntax from URLs
+    # UPDATED: Markdown syntax removed from URLs
     helper_resources = [
         {"name": "BYU CAPS (Referring a Student)", "url": "[https://caps.byu.edu/](https://caps.byu.edu/)", "desc": "Free counseling and psychology services for students. They can guide you on how to set boundaries and effectively support a friend in crisis."},
         {"name": "Seize the Awkward", "url": "[https://seizetheawkward.org/](https://seizetheawkward.org/)", "desc": "A guide to starting conversations about mental health. It provides practical icebreakers to help you move past the awkwardness and offer real support."},
@@ -374,7 +374,7 @@ elif st.session_state.step == 88:
     
     st.write("")
     st.subheader("Deep Dive: The Science of Connection")
-    # UPDATED: Removed Markdown []() syntax from URLs
+    # UPDATED: Markdown syntax removed from URLs
     research_resources = [
         {"name": "Surgeon General's Advisory on Loneliness", "url": "[https://www.hhs.gov/about/news/2023/05/03/new-surgeon-general-advisory-raises-alarm-about-devastating-impact-epidemic-loneliness-isolation-united-states.html](https://www.hhs.gov/about/news/2023/05/03/new-surgeon-general-advisory-raises-alarm-about-devastating-impact-epidemic-loneliness-isolation-united-states.html)", "desc": "The 2023 advisory declaring loneliness a public health epidemic and detailing its physical health consequences."},
         {"name": "BYU Research: Social Connection as a Vital Sign", "url": "[https://news.byu.edu/intellect/byu-researchers-show-social-connection-is-still-underappreciated-as-a-medically-relevant-health-factor](https://news.byu.edu/intellect/byu-researchers-show-social-connection-is-still-underappreciated-as-a-medically-relevant-health-factor)", "desc": "Research from BYU's Julianne Holt-Lunstad showing that social connection is as critical to physical health as exercise or diet."},
@@ -419,7 +419,7 @@ elif st.session_state.step == 5:
     st.markdown("Based on your answers, we have identified a few specific areas where support might be helpful.")
     st.write("")
     
-    # UPDATED: Removed Markdown []() syntax from ALL URLs below
+    # UPDATED: Markdown syntax removed from ALL URLs below
     results_content = {
         1: { "topic": "a crisis", "resources": [] },
         2: { "topic": "feelings of loneliness despite being around others", "resources": [
